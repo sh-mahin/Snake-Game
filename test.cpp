@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return 1;
     }
-    
+    //Bdangladesh
 
     // Create a window
     SDL_Window* window = SDL_CreateWindow(
