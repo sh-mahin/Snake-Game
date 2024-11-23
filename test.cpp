@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+using namespace std;
 
 
 const int WINDOW_WIDTH = 1000;
@@ -17,7 +18,7 @@ public:
     SnakeGame() : direction(RIGHT), snakeSize(1), score(0) {
         
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-            std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
+            cerr << "Failed to initialize SDL: " << SDL_GetError() << endl;
             exit(1);
         }
 
@@ -30,7 +31,7 @@ public:
         snakeBody.push_back(snakeHead);
 
         
-        std::srand(static_cast<unsigned>(std::time(0)));
+        srand(static_cast<unsigned>(time(0)));
         generateApple();
     }
 
@@ -68,14 +69,14 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Rect snakeHead;
-    std::deque<SDL_Rect> snakeBody;
+    deque<SDL_Rect> snakeBody;
     SDL_Rect apple;
     Direction direction;
     int snakeSize;
     int score;
 
     int getRandomCoord() {
-        return (std::rand() % (WINDOW_WIDTH / TILE_SIZE)) * TILE_SIZE;
+        return (rand() % (WINDOW_WIDTH / TILE_SIZE)) * TILE_SIZE;
     }
 
     void handleDirection(SDL_Keycode key) {
@@ -153,7 +154,7 @@ private:
     }
 
     void generateApple() {
-        apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; // Generate new apple at random position
+        apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; 
     }
 
     void resetGame() {
