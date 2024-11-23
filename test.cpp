@@ -18,7 +18,7 @@ public:
     SnakeGame() : direction(RIGHT), snakeSize(1), score(0) {
         
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-            cerr << "Failed to initialize SDL: " << SDL_GetError() << endl;
+            cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
             exit(1);
         }
 
@@ -154,7 +154,7 @@ private:
     }
 
     void generateApple() {
-        apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; 
+        apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; // Generate new apple at random position
     }
 
     void resetGame() {
