@@ -7,15 +7,15 @@
 using namespace std;
 
 
-const int WINDOW_WIDTH = 1000;
-const int WINDOW_HEIGHT = 1000;
-const int TILE_SIZE = 10;
+const int WINDOW_WIDTH = 640;
+const int WINDOW_HEIGHT = 440;
+const int TILE_SIZE = 20;
 
 enum Direction { UP, DOWN, LEFT, RIGHT };
 
 class SnakeGame {
 public:
-    SnakeGame() : direction(RIGHT), snakeSize(1), score(0) {
+    SnakeGame() : direction(LEFT), snakeSize(1), score(0) {
         
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
@@ -27,7 +27,7 @@ public:
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         
-        snakeHead = {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, TILE_SIZE, TILE_SIZE};
+        snakeHead = {WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, TILE_SIZE, TILE_SIZE};
         snakeBody.push_back(snakeHead);
 
         
@@ -61,6 +61,9 @@ public:
             
             render();
 
+             generateAppleWithTimer(5); // New apple every 5 seconds
+
+
             SDL_Delay(100); 
         }
     }
@@ -74,6 +77,8 @@ private:
     Direction direction;
     int snakeSize;
     int score;
+
+    Uint32 lastAppleTime; 
 
     int getRandomCoord() {
         return (rand() % (WINDOW_WIDTH / TILE_SIZE)) * TILE_SIZE;
@@ -111,19 +116,31 @@ private:
         if (snakeHead.x >= WINDOW_WIDTH) snakeHead.x = 0;
         if (snakeHead.y >= WINDOW_HEIGHT) snakeHead.y = 0;
 
+        if (snakeHead.x < 0 || snakeHead.y < 0 || 
+            snakeHead.x >= WINDOW_WIDTH || snakeHead.y >= WINDOW_HEIGHT) {
+            gameOver(); // End the game if snake hits the wall
+            return;
+        }
+
+        for (const auto& segment : snakeBody) {
+            if (snakeHead.x == segment.x && snakeHead.y == segment.y) {
+                gameOver(); // End the game if snake hits itself
+                return;
+            }
+
        
         if (snakeHead.x == apple.x && snakeHead.y == apple.y) {
             score++; 
             snakeSize++; 
             generateApple(); 
         }
-
+    
         
-        for (const auto& segment : snakeBody) {
-            if (snakeHead.x == segment.x && snakeHead.y == segment.y) {
+       for (const auto& segment : snakeBody) {
+           if (snakeHead.x == segment.x && snakeHead.y == segment.y) {
                 
-                resetGame();
-                break;
+              resetGame();
+               break;
             }
         }
 
@@ -132,6 +149,7 @@ private:
         while (snakeBody.size() > static_cast<size_t>(snakeSize)) {
             snakeBody.pop_back();
         }
+    }
     }
 
     void render() {
@@ -155,6 +173,23 @@ private:
 
     void generateApple() {
         apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; // Generate new apple at random position
+        lastAppleTime = SDL_GetTicks(); // Update apple generation time
+    }
+
+    void generateAppleWithTimer(int timeLimit) {
+        Uint32 currentTime = SDL_GetTicks();
+        if ((currentTime - lastAppleTime) >= (timeLimit * 1000)) {
+            generateApple();
+        }
+    }
+
+      void gameOver() {
+        cout << "Game Over! Your Score: " << score << endl;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(2000); // Wait for 2 seconds
+        resetGame();
     }
 
     void resetGame() {
@@ -164,10 +199,11 @@ private:
         snakeBody.push_back(snakeHead);
         snakeSize = 1;
         score = 0; 
+        direction = RIGHT;
+        generateApple();
     }
 };
-
-
+    
 int SDL_main(int argc, char* argv[]) {
     SnakeGame game;
     game.run();
