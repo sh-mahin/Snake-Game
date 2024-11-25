@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <SDL2/SDL_ttf.h>
 using namespace std;
 
 
@@ -28,7 +29,7 @@ public:
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         
-        snakeHead = {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, TILE_SIZE, TILE_SIZE};
+        snakeHead = {0, WINDOW_HEIGHT / 2, TILE_SIZE, TILE_SIZE};
         snakeBody.push_back(snakeHead);
 
         
@@ -48,6 +49,7 @@ public:
 
         while (running) {
            
+           
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_QUIT) {
                     running = false;
@@ -62,9 +64,9 @@ public:
             
             render();
 
-            generateAppleWithTimer(4); // New apple every 5 seconds
+            // generateAppleWithTimer(4); // New apple every 5 seconds
 
-            SDL_Delay(110); 
+            SDL_Delay(150); 
         }
     }
 
@@ -98,6 +100,9 @@ private:
             case SDLK_RIGHT:
                 if (direction != LEFT) direction = RIGHT;
                 break;
+            case SDLK_SPACE:
+            SDL_Quit();
+            break;
         }
     }
 
@@ -177,11 +182,15 @@ private:
         SDL_RenderPresent(renderer);
     }
     
+void generateApple() {
+    // Ensure the apple's position is inside the window boundaries, leaving room for its size
+    apple.x = (rand() % ((WINDOW_WIDTH / TILE_SIZE) - 1)) * TILE_SIZE;
+    apple.y = (rand() % ((WINDOW_HEIGHT / TILE_SIZE) - 1)) * TILE_SIZE;
 
-    void generateApple() {
-        apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; // Generate new apple at random position
-        lastAppleTime = SDL_GetTicks(); 
-    }
+    // Set the size of the apple
+    apple.w = TILE_SIZE;
+    apple.h = TILE_SIZE;
+}
 
       void generateAppleWithTimer(int timeLimit) {
         Uint32 currentTime = SDL_GetTicks();
@@ -195,7 +204,8 @@ private:
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
-        SDL_Delay(1500);
+        SDL_Delay(1000);
+        SDL_Quit();
         resetGame();
     }
 
