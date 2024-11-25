@@ -165,7 +165,7 @@ private:
 
     void render() {
         
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
+        SDL_SetRenderDrawColor(renderer, 25,25, 102, 255); 
         SDL_RenderClear(renderer);
 
        
@@ -201,7 +201,7 @@ void generateApple() {
 
      void gameOver() {
         cout << "Game Over! Your Score: " << score << endl;
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 50, 25, 80, 255);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
         SDL_Delay(1000);
