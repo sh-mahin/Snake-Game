@@ -1,3 +1,4 @@
+
 #include <SDL2/SDL.h>
 #include <deque>
 #include <vector>
@@ -115,7 +116,24 @@ private:
             snakeHead.x >= WINDOW_WIDTH || snakeHead.y >= WINDOW_HEIGHT) {
             gameOver(); // End the game if snake hits the wall
             return;
-        }
+            }
+        // 
+    //      if (snakeHead.x < 0)
+    // {
+    //     snakeHead.x =WINDOW_WIDTH ;
+    // }
+    // else if (snakeHead.x >= WINDOW_WIDTH)
+    // {
+    //     snakeHead.x = 0;
+    // }
+    //        if (snakeHead.y < 0)
+    // {
+    //     snakeHead.y =WINDOW_HEIGHT ;
+    // }
+    // else if (snakeHead.y >= WINDOW_HEIGHT)
+    // {
+    //     snakeHead.y = 0;
+    // }
 
 
         for (const auto& segment : snakeBody) {
@@ -158,6 +176,7 @@ private:
         
         SDL_RenderPresent(renderer);
     }
+    
 
     void generateApple() {
         apple = {getRandomCoord(), getRandomCoord(), TILE_SIZE, TILE_SIZE}; // Generate new apple at random position
